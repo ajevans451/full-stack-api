@@ -19,7 +19,7 @@ router.get('/characters', requireToken, (req, res, next) => {
     .then(char => res.status(206).json(char))
     .catch(next)
 })
-router.patch('/characters/:id', requireToken, (req, res, next) => {
+router.patch('/characters/:character_id', requireToken, (req, res, next) => {
   delete req.body.character.owner
   const charId = req.params.id
   Character.findById(charId)
