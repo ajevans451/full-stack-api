@@ -7,7 +7,7 @@ const User = require('../models/user')
 const router = express.Router()
 router.post('/sign-up', (req, res, next) => {
   const creds = req.body.credentials
-  Promise.resolve()
+  Promise.resolve(creds)
     .then(() => {
       if (!creds || !creds.password || creds.password !== creds.password_confirmation) {
         throw new Error('Omitted or invalid parameter')
