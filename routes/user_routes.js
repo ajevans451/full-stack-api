@@ -2,12 +2,21 @@ const express = require('express')
 const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 const passport = require('passport')
-const requireToken = passport.authenticate('bearer', { session: false })
-const User = require('../models/user')
+// custom ERRORS
+const customErrors = require('../lib/custom_errors')
+const handle404 = customErrors.handle404
+const BadParamsError = customErrors.BadParamsError
+const BadCredentialsError = customErrors.BadCredentialsError
+// define router
 const router = express.Router()
+const User = require('../models/user')
+const requireToken = passport.authenticate('bearer', { session: false })
+
 router.post('/sign-up', (req, res, next) => {
+  console.log(" sign-up router called")
   const creds = req.body.credentials
   Promise.resolve(creds)
+    .then(console.log('router promise resolving'))
     .then(() => {
       if (!creds || !creds.password || creds.password !== creds.password_confirmation) {
         throw new Error('Omitted or invalid parameter')
@@ -18,7 +27,7 @@ router.post('/sign-up', (req, res, next) => {
     })
     .then(hash => {
       const user = {
-        hashedPW: hash,
+        hashedPassword: hash,
         email: creds.email
       }
       return User.create(user)
@@ -29,6 +38,7 @@ router.post('/sign-up', (req, res, next) => {
     .catch(next)
 })
 router.post('/sign-in', (req, res, next) => {
+  console.log(" sign-in router called")
   const password = req.body.credentials.password
   let user
   User.findOne({ email: req.body.credentials.email })
@@ -54,6 +64,7 @@ router.post('/sign-in', (req, res, next) => {
     .catch(next)
 })
 router.patch('/change-password', requireToken, (req, res, next) => {
+  console.log(" change-PW router called")
   let user
   User.findById(req.user.id)
     .then(foundUser => {
@@ -77,6 +88,7 @@ router.patch('/change-password', requireToken, (req, res, next) => {
     .catch(next)
 })
 router.delete('/sign-out', requireToken, (req, res, next) => {
+  console.log(" sign-out router called")
   req.user.token = crypto.randomBytes(16)
   req.user.save()
     .then(() => res.sendStatus(204))

@@ -7,6 +7,7 @@ const handle404 = customErrors.handle404
 const requireOwnership = customErrors.requireOwnership
 const requireToken = passport.authenticate('bearer', { session: false })
 router.post('/characters', (req, res, next) => {
+  console.log("character creation router called")
   const charInfo = req.body.character
   charInfo.owner = req.user.id
   Character.create(charInfo)
@@ -14,12 +15,14 @@ router.post('/characters', (req, res, next) => {
     .catch(next)
 })
 router.get('/characters', requireToken, (req, res, next) => {
+  console.log("character index router called")
   Character.find()
     .populate('owner')
     .then(char => res.status(206).json(char))
     .catch(next)
 })
 router.patch('/characters/:character_id', requireToken, (req, res, next) => {
+  console.log("character update router called")
   delete req.body.character.owner
   const charId = req.params.id
   Character.findById(charId)
@@ -30,6 +33,7 @@ router.patch('/characters/:character_id', requireToken, (req, res, next) => {
     .catch(next)
 })
 router.get('/characters/:character_id', requireToken, (req, res, next) => {
+  console.log("character show router called")
   const charId = req.params.character_id
   Character.findById(charId)
     .then(handle404)
@@ -37,6 +41,7 @@ router.get('/characters/:character_id', requireToken, (req, res, next) => {
     .catch(next)
 })
 router.delete('/characters/:character_id', requireToken, (req, res, next) => {
+  console.log("character delete router called")
   const charId = req.params.character_id
   Character.findById(charId)
     .then(handle404)
