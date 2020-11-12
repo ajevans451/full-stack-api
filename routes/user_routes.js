@@ -53,6 +53,7 @@ router.post('/sign-in', (req, res, next) => {
       if (correctPW) {
         const token = crypto.randomBytes(16).toString('hex')
         user.token = token
+        console.log(user.token)
         return user.save()
       } else {
         throw new Error('Invalid email or password')
