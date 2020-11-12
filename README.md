@@ -3,12 +3,14 @@
 
 
 ### Important Links
-- Deployed Client
-- Deployed API
+- [Deployed Client](https://ajevans451.github.io/full-stack-client/)
+- [Deployed API](https://dnd-character-creation.herokuapp.com/)
 - [Other Repo](https://github.com/ajevans451/full-stack-client)
 
 #### Technologies Used
--
+- Javascript
+- Express
+- Mongodb
 
 #### Unsolved Problems
 -
