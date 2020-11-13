@@ -1,7 +1,7 @@
 process.env.TESTENV = true
 
 const bcrypt = require('bcrypt')
-const User = require('../app/models/user')
+const User = require('../models/user')
 
 const chai = require('chai')
 const chaiHttp = require('chai-http')
