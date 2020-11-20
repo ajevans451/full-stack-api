@@ -2,20 +2,42 @@ const express = require('express')
 const passport = require('passport')
 const router = express.Router()
 const Character = require('./../models/character')
+const User = require('../models/user')
 const customErrors = require('./../lib/custom_errors')
 const handle404 = customErrors.handle404
 const requireOwnership = customErrors.requireOwnership
 const requireToken = passport.authenticate('bearer', { session: false })
 router.post('/characters', (req, res, next) => {
   console.log("character creation router called")
-  const charInfo = req.body.character
-  charInfo.owner = req.user.id
-  Character.create(charInfo)
-    .then(character => res.status(201).json({ character }))
-    .catch(next)
+  // first, find the user using their token
+  const userToken = req.header.token
+  // console.log(userToken)
+  User.findOne({ 'token': userToken }, '_id', function(err, foundUser){
+    console.log('found user:')
+    console.log(foundUser)
+    // user was found.  good.
+    // now perform the action (create character) using the request data.
+    charInfo = req.body.character
+    //console.log('character data:')
+    //console.log(charInfo)
+    charInfo.owner = foundUser._id
+    //console.log('full character info:')
+    //console.log(charInfo)
+    Character.create(charInfo)
+      //.then(character => res.status(201).json({ character }))
+      //.then(character => console.log(character))
+      .then(character => res.status(201).json({ character: character }))
+      .catch(next)
+    console.log("done with character creation router")
+  })
+  //const charInfo = req.body.character
+  // console.log(charInfo)
+  //charInfo.owner = foundUser._id
 })
 router.get('/characters', requireToken, (req, res, next) => {
   console.log("character index router called")
+  // get the user (owner) id
+  // pass that owner id to the find so the user's characters can be found
   Character.find()
     .populate('owner')
     .then(char => res.status(206).json(char))
